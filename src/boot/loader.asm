@@ -2,23 +2,30 @@ bits 16
 org 0x7c00
 
 main:
+    mov ax, 0
+    mov ds, ax
+    mov es, ax
+
+    mov ss, ax
+    mov sp, 0x7c00
 
 print_str:
-    mov si, hello
     mov ah, 0x0e
+    mov cx, pad - msg
+    mov si, msg
 .next_char:
     lodsb
-    or al, al
-    jz halt
     int 0x10
-    jmp .next_char
+    loop .next_char
 
 halt:
     cli
     hlt
     
-hello: db 'Welcome to SOS!',0
+msg: db 'Loading SOS!',0
 
-times 510-($-$$) db 0
-dw 0xaa55
+pad:
+    times 510-($-$$) db 0
+sig:
+    dw 0xaa55
 
