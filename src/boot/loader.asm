@@ -2,21 +2,30 @@ bits 16
 org 0x7c00
 
 main:
-    mov ax, 0
+    ;Starting data segment...
+    xor ax, ax
     mov ds, ax
     mov es, ax
 
+    ;Starting stack...
     mov ss, ax
     mov sp, 0x7c00
 
-print_str:
-    mov ah, 0x0e
-    mov cx, pad - msg
-    mov si, msg
-.next_char:
-    lodsb
+clear_screen:
+    
+    ;clear screen 
+    ;AH 0x00 => change video mode
+    ;AL 0x30 => VGA text mode 80x25, char 9x16
+    mov al, 0x03
     int 0x10
-    loop .next_char
+
+print_msg:
+    mov ax, 0x1301
+    mov bx, 0x02
+    mov cx, pad - msg
+    xor dx, dx
+    mov bp, msg
+    int 0x10
 
 halt:
     cli
