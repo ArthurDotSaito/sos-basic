@@ -1,16 +1,23 @@
-org 0x7c00
+aorg 0x7c00
 bits 16
 
 main:
 
-    mov al, 0x02
+print_str:
+    mov si, hello
     mov ah, 0x0e
-    mov bh, 0
+.next_char:
+    lodsb
+    or al, al
+    jz halt
     int 0x10
+    jmp .next_char
 
 halt:
+    cli
     hlt
-    jmp halt
+    
+hello: db 'Welcome to SOS!',0
 
 times 510-($-$$) db 0
 dw 0xaa55
